@@ -1,0 +1,106 @@
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/css/materialize.min.css">
+    <!-- Compiled and minified JavaScript -->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/js/materialize.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.8/socket.io.min.js"></script>
+    <script src="/javascripts/listServer.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  </head>
+  <body>
+      <header>
+        <div>
+          <nav class="indigo darken-2">
+            <div class="nav-wrapper">
+              Server Health & Configuration
+            </div>
+          </nav>
+        </div>
+      </header>
+      <div class="divider"></div>
+      <div class="divider"></div>
+      <div class="container">
+        <div class="row">
+          <div class="col s12">
+            <ul class="tabs">
+              <li class="tab col s3"><a href="#serverhealth">Server Stats</a></li>
+              <li class="tab col s3"><a href="#cofigserver">Add Server</a></li>
+            </ul>
+          </div>
+          <div id="serverhealth" class="col s12">
+            <table class="striped">
+              <thead>
+                <tr>
+                    <th data-field="id">Server Id</th>
+                    <th data-field="name">Server Address</th>
+                    <th data-field="price">Health</th>
+                </tr>
+              </thead>
+              <tbody id="tblsvrhealth">
+
+              </tbody>
+            </table>
+          </div>
+          <div id="cofigserver" class="col s12">
+            <div class="container">
+              <div class="row">
+                You need to add server ip and port on which server is publishing stats and log data.
+              </div>
+              <div class="row">
+                <form class="col s12">
+                  <div class="row">
+                    <div class="input-field col s6">
+                      <input id="svrid" type="text" class="validate clearField">
+                      <label for="svrid" class="">Server ID</label>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="input-field col s6">
+                      <input id="svrip" type="text" class="validate clearField">
+                      <label for="svrip" class="">Server IP</label>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="input-field col s6">
+                      <input id="svrport" type="text" class="validate clearField">
+                      <label for="svrport">Server Port</label>
+                    </div>
+                  </div>
+                  <a class="waves-effect waves-light btn pink accent-2" id="addserver">Add Server</a>
+                </form>
+              </div>
+            </div>
+          </div>
+      </div>
+      </div>
+      <script type="text/javascript">
+      var socket = io('http://localhost:3000');
+      socket.on('health',function(data){
+        //console.log('Data from sstatus ' + JSON.stringify(data));
+        //console.log("classes :" +$('#'+data.sid).children('td').last().children('i').attr('class') + " typeof "+ typeof $('#'+data.sid).children('td').last().children('i').attr('class'));
+        var cssArr = $('#'+data.sid).children('td').last().children('i').attr('class').split(' ');
+        //console.log("length : " + cssArr.length + "    " + cssArr[2]);
+        
+        if(cssArr[2].toString != data.status){
+          $('#'+data.sid).children('td').last().children('i').removeClass(cssArr[2]);
+          $('#'+data.sid).children('td').last().children('i').addClass(data.status);
+        }
+      })
+      $(document).ready(function(){
+        $('ul.tabs').tabs('select_tab', 'serverhealth');
+        $("#addserver").click(addServer);
+        // $("#svrid").focusout(function(){
+        //    if(!validateIp($(this).val())) alert("Valid v4 IP address required !!");
+        // });
+        // $("#svrport").focusout(function(){
+        //    if(!validatePortRange($(this).val())) alert("Valid port number required !!");
+        // });
+        getAllServer();
+      });
+      </script>
+  </body>
+</html>

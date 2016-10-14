@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+    <script src="http://code.highcharts.com/highcharts.js"></script>
+
+    <script type="text/javascript">
+    console.log("Text");
+    var socket = io('http://localhost:3000');
+        socket.on('socketToMe', function (data) {
+          console.log(data);
+        });
+        socket.on('news',function(data){
+          console.log('news --> '+JSON.stringify(data))
+        });
+
+
+    </script>
+  </head>
+  <body>
+    <h1><%= title %></h1>
+    <p>Welcome to <%= title %></p>
+    <div id="container" style="width:40%; height:300px;"></div>
+    <script type="text/javascript">
+    var chart;
+    socket.on('persec',function(data){
+      console.log('persec --> '+data);
+      var series = chart.series[0],
+          shift = series.data.length > 20; // shift if the series is
+                                             // longer than 20
+          // add the point
+          chart.series[0].addPoint(data, true, shift);
+
+    });
+    socket.on('permil',function(data){
+      console.log('permil --> '+data);
+      var series = chart.series[1],
+          shift = series.data.length > 20; // shift if the series is
+                                             // longer than 20
+          // add the point
+          chart.series[1].addPoint(data, true, shift);
+    });
+
+    $(document).ready(function() {
+      chart = new Highcharts.Chart({
+          chart: {
+              renderTo: 'container',
+              defaultSeriesType: 'spline'
+          },
+          title: {
+              text: 'Live random data'
+          },
+          xAxis: {
+              type: 'datetime',
+              tickPixelInterval: 150,
+              maxZoom: 20 * 1000
+          },
+          yAxis: {
+              minPadding: 0.2,
+              maxPadding: 0.2,
+              title: {
+                  text: 'Value',
+                  margin: 80
+              }
+          },
+          series: [{
+              name: 'Per Sec',
+              data: []
+          },{
+              name: 'Per Mill',
+              data: []
+          },
+        ]
+      });
+    });
+    </script>
+  </body>
+</html>
