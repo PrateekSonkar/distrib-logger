@@ -3,15 +3,16 @@ var publisher = zmq.socket('pub');
 var appmetrics = require('appmetrics');
 var monitoring = appmetrics.monitor();
 var sName = "publisher1";
+
 publisher.bind('tcp://*:5563', function(err) {
   if(err)
     console.log(err)
   else
     console.log('publishing on 5563…')
-})
+});
 
 monitoring.on('cpu', function (cpu) {
-    //console.log("CPU : " + JSON.stringify(cpu));
+    console.log("CPU : " + JSON.stringify(cpu));
     var msg = {
       collectionName : 'cpu',
       stats : cpu,

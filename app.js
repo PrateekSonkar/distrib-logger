@@ -36,48 +36,43 @@ db.init(function(err,database){
     });
   }
 });
+
+var emitHealth = function(status,sid,isConnected){
+  io.emit('health',{
+    status:status,
+    sid:sid,
+    isConnected : isConnected
+  });
+}
+
+var sendMail = function(server,ip){
+  console.log('server is down !');
+}
+
 setInterval(function(){
-  //console.log(new Date() +" health "+JSON.stringify(serverHealth.healthStats));
   if(serverHealth.healthStats.serverIds.length > serverHealth.healthStats.length){
-    //console.log("Length mismatched !!" + serverHealth.healthStats.servers[serverHealth.healthStats.serverIds[serverHealth.healthStats.serverIds.length-1]].ip);
-    pubsub.startListening(serverHealth.healthStats.servers[serverHealth.healthStats.serverIds.length-1].ip,serverHealth.healthStats.servers[serverHealth.healthStats.serverIds.length-1].port);
-    serverHealth.healthStats.length = serverHealth.healthStats.servers.length;
+      pubsub.startListening(serverHealth.healthStats.servers[serverHealth.healthStats.serverIds[serverHealth.healthStats.serverIds.length-1]].ip,serverHealth.healthStats.servers[serverHealth.healthStats.serverIds[serverHealth.healthStats.serverIds.length-1]].port,io);
+      serverHealth.healthStats.length = serverHealth.healthStats.servers.length;
   }
   var currDate = new Date().getTime();
   console.log("currDate "+ currDate);
   for(var server = 0;server < serverHealth.healthStats.serverIds.length ; server++){
-    //console.log('server index : ' + server);
-    //console.log('last cpu time : ' + JSON.stringify(serverHealth.healthStats.serverEventTime[serverHealth.healthStats.serverIds[server]]));
     if(serverHealth.healthStats.serverEventTime[serverHealth.healthStats.serverIds[server]]){
-      //console.log("server Available");
       var tDiff = (currDate - serverHealth.healthStats.serverEventTime[serverHealth.healthStats.serverIds[server]].cpu)/1000;
     } else {
       tDiff = undefined;
     }
-    console.log("time Difference is : " + tDiff);
     if(tDiff <= 5){
-      io.emit('health',{
-        status:"green",
-        sid:serverHealth.healthStats.servers[serverHealth.healthStats.serverIds[server]].serverId,
-        isConnected : Boolean(serverHealth.healthStats.serverEventTime[serverHealth.healthStats.serverIds[server]])
-      });
+      emitHealth('green',serverHealth.healthStats.servers[serverHealth.healthStats.serverIds[server]].serverId,Boolean(serverHealth.healthStats.serverEventTime[serverHealth.healthStats.serverIds[server]]));
     } else if(tDiff > 5 && tDiff < 10) {
-      io.emit('health',{
-        status:"yellow",
-        sid:serverHealth.healthStats.servers[serverHealth.healthStats.serverIds[server]].serverId,
-        isConnected : Boolean(serverHealth.healthStats.serverEventTime[serverHealth.healthStats.serverIds[server]])
-      });
+      emitHealth('yellow',serverHealth.healthStats.servers[serverHealth.healthStats.serverIds[server]].serverId,Boolean(serverHealth.healthStats.serverEventTime[serverHealth.healthStats.serverIds[server]]));
     } else {
-      io.emit('health',{
-        status:"red",
-        sid:serverHealth.healthStats.servers[serverHealth.healthStats.serverIds[server]].serverId,
-        isConnected : Boolean(serverHealth.healthStats.serverEventTime[serverHealth.healthStats.serverIds[server]])
-      });
+      emitHealth('red',serverHealth.healthStats.servers[serverHealth.healthStats.serverIds[server]].serverId,Boolean(serverHealth.healthStats.serverEventTime[serverHealth.healthStats.serverIds[server]]));
+      sendMail()
     }
   }
 },2000);
 
-setTimeout
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
