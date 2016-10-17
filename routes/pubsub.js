@@ -55,7 +55,6 @@ subscriber.on('message',function(){ // data as param
         loop      : newDt
       };
       serverHealth.healthStats.serverEventTime[msg[0].sname] = obj;
-
     }
 });
 

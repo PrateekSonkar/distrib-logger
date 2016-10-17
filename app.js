@@ -8,9 +8,9 @@ var appmetrics = require('appmetrics');
 var monitoring = appmetrics.monitor();
 var serverHealth = require('./config/serverHealth');
 var pubsub = require('./routes/pubsub');
-var MongoClient   = require('mongodb').MongoClient,
-    assert        = require('assert'),
-    ObjectID      = require('mongodb').ObjectID;
+var MongoClient   = require('mongodb').MongoClient;
+var assert        = require('assert');
+var ObjectID      = require('mongodb').ObjectID;
 var db  = require('./config/dbConnection');
 
 var routes = require('./routes/index');
