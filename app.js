@@ -50,9 +50,11 @@ var sendMail = function(server,ip){
 }
 
 setInterval(function(){
+  console.log("Length set Interval !! " + serverHealth.healthStats.length + " \t\t " + serverHealth.healthStats.serverIds.length);
   if(serverHealth.healthStats.serverIds.length > serverHealth.healthStats.length){
+      console.log("Length mis-matched !! " + serverHealth.healthStats.length + " \t\t " + serverHealth.healthStats.serverIds.length);
       pubsub.startListening(serverHealth.healthStats.servers[serverHealth.healthStats.serverIds[serverHealth.healthStats.serverIds.length-1]].ip,serverHealth.healthStats.servers[serverHealth.healthStats.serverIds[serverHealth.healthStats.serverIds.length-1]].port,io);
-      serverHealth.healthStats.length = serverHealth.healthStats.servers.length;
+      serverHealth.healthStats.length = serverHealth.healthStats.serverIds.length;
   }
   var currDate = new Date().getTime();
   console.log("currDate "+ currDate);

@@ -10,3 +10,10 @@ So to solve this problem, I created this mini project, which uses zmq as an comm
 * Dymanic addition of servers.
 * Realtime health stat dashboard.
 * Dead app notification.
+
+## Prerequisites
+One must have ZMQ installed in both the machines, one from where data has to be collected and one where distrib-logger is installed.
+
+## Dependencies
+* [ZMQ](https://github.com/JustinTulloss/zeromq.node)
+* [Appmetrics](https://github.com/RuntimeTools/appmetrics)

@@ -13,7 +13,7 @@ router.get('/dashboard', function(req, res, next) {
 });
 
 router.get('/servers', function(req, res, next) {
-  res.render('listserver', { title: 'Dashboard' });
+  res.render('listserver', { title: 'Add & List Server  ' });
 });
 
 router.post('/dummy',function(req, res, next){
